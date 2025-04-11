@@ -1,6 +1,8 @@
-import mongoose from "mongoose";
+import mongoose, { IfUnknown } from "mongoose";
+import { IUserDoc } from "src/interface/user.interface";
 
-export default mongoose.model('User', new mongoose.Schema({
+
+export const UserModel = mongoose.model<IUserDoc>('User', new mongoose.Schema<IUserDoc>({
     email: {
         type: String,
         unique: true,

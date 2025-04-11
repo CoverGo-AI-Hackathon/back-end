@@ -1,6 +1,6 @@
 {
     "googleOauthConfig": {
-        "clientId": "316275848999-vef63b5gcifv6b9erso5ivucnq21ufkv.apps.googleusercontent.com",
+        "clientId": "86683415797-aq6n74j9gdkrd7pd3u6a2d55fh587cd3.apps.googleusercontent.com",
         "redirectUri": "http://localhost:8000/auth/google/callback",
         "responseType": "code",
         "scope": "openid%20email%20profile",

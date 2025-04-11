@@ -1,4 +1,4 @@
-import userRepository from 'repository/userRepository';
+import { userRepository } from 'repository/userRepository';
 import jwtHelper from 'src/helper/jwtHelper';
 
 export default {
@@ -10,7 +10,7 @@ export default {
 
         const existUser = await userRepository.existUserByEmail(email)
         if (existUser) {
-          const jwt = jwtHelper.jwtSign(existUser.email, fingerprint, existUser.password)
+          const jwt = jwtHelper.jwtSign(existUser.email, fingerprint, existUser.password || "")
 
           return jwt
         } 
@@ -35,7 +35,7 @@ async function getGoogleToken(code: string) {
         code
       })
     });
-  
+    console.log(res)
     if (!res.ok) throw new Error('Failed to get token from Google');
     return res.json();
 }

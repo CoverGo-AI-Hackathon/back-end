@@ -17,9 +17,7 @@ export default {
         const fingerprint = Array.isArray(fingerprintHeader) 
             ? fingerprintHeader[0] 
             : fingerprintHeader || 'unknown';
-
         const access_token = await userService.handleGoogleOAuth(code, fingerprint)
-        
         res.redirect(`${process.env.FRONT_END_REDIRECT_URL}?access_token=${access_token}` || `https://example.com?access_token=${access_token}`)
     },
 
