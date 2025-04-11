@@ -5,6 +5,7 @@ import redisService from 'service/redisService';
 import jwtHelper from 'src/helper/jwtHelper';
 import respond from 'view/respond';
 
+
 export default {
     loginController: (req: Request, res: Response) => {
         res.redirect(store.googleLoginUrl);

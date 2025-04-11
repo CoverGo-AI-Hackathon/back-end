@@ -10,7 +10,7 @@ export default {
 
         const user = await infoService.getInfoService(email)
 
-        res.send(user)
+        res.send(user[0])
     },
 
     patchInfoController: async (req: Request, res: Response) => {

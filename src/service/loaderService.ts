@@ -56,6 +56,10 @@ export default {
         const app = express();
 
         // Express Config
+        app.get('/', (req: Request, res: Response) => {
+            res.render("api-docs", { data: routerConfig })
+        });
+
         app.use(express.json()); 
         app.use(express.urlencoded({ extended: true }));
         app.set("view engine", 'ejs')
@@ -75,14 +79,10 @@ export default {
             next();
         });
 
-        app.use((req, res, next) => {
-            res.type("application/json");
-            next();
-        });
-
-        app.get('/', (req: Request, res: Response) => {
-            res.render("api-docs", { data: routerConfig })
-        });
+        // app.use((req, res, next) => {
+        //     res.type("application/json");
+        //     next();
+        // });
 
         // Router Init
         routerConfig.forEach(item => {

@@ -35,9 +35,12 @@ async function getGoogleToken(code: string) {
         code
       })
     });
-  
+    
+    const data = await res.json()
+    console.log(data)
+
     if (!res.ok) throw new Error('Failed to get token from Google');
-    return res.json();
+    return data;
 }
 
 async function getUserInfo(accessToken: string) {
