@@ -25,10 +25,10 @@ export default {
         try {
             jwt = jwtHelper.jwtVerify(token)
 
-            const tokenCheck = await redisService.getItem(`BLACK_LIST_TOKEN_${jwt.uuid}`)
+            const tokenCheck = await redisService.getItem(`BLACK_LIST_TOKEN:${jwt.uuid}`)
 
             if (tokenCheck) {
-                res.status(401).json(respond(401, "Token has been invalidated"))
+                res.status(401).json(respond(401, "Token Has Been Invalidated"))
                 return
             }
         } catch(err: any) {
@@ -50,7 +50,9 @@ export default {
 
             return
         }
-    
+        
+        // @ts-ignore
+        req.user = jwt
         next();
     }
 }

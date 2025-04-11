@@ -18,6 +18,10 @@ export default mongoose.model('User', new mongoose.Schema({
         type: String,
         default: null
     },
+    money: {
+        type: Number,
+        default: 0
+    },
     role: {
         type: [String],
         default: [

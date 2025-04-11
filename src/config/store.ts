@@ -19,12 +19,16 @@ export default {
     "GOOGLE_CLIENT_SECRET",
     "CALLBACK_URL",
 
-    "FRONT_END_REDIRECT_URL",
-
     "JWT_SECRET",
     "HMAC_SECRET_KEY",
 
     "AES_KEY",
-    "IV"
+    "IV",
+    "FRONT_END_REDIRECT_URL",
+
+    "ZALO_PAY_APP_ID",
+    "ZALO_PAY_KEY_1",
+    "ZALO_PAY_KEY_2",
+    "ZALO_PAY_ENDPOINT",
   ]
 }

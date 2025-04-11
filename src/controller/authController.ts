@@ -31,7 +31,7 @@ export default {
 
         const ttl = (payLoad!.exp || 0) - Math.floor(Date.now() / 1000)
 
-        redisService.setItem(`BLACK_LIST_TOKEN_${payLoad.uuid}`, "lmao", ttl)
+        redisService.setItem(`BLACK_LIST_TOKEN:${payLoad.uuid}`, "check", ttl)
 
         res.json(respond(200, "Đăng xuất thành công"))
     }

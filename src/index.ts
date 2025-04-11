@@ -1,3 +1,4 @@
+import 'module-alias/register';
 import loaderService from 'service/loaderService'
 import checkService from 'service/checkService'
 
