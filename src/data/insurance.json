@@ -1,0 +1,196 @@
+[
+    {
+      "id": "vhis_standard_01",
+      "name": "VHIS Standard Basic",
+      "type": "Standard",
+      "targetAudience": ["cá nhân", "ngân sách thấp", "sinh viên"],
+      "coverage": {
+        "hospitalization": "400 HKD/ngày",
+        "surgical": "30,000 HKD/năm",
+        "prePostHospital": "2 lần khám",
+        "prescribedMedication": true
+      },
+      "monthlyPremiumHKD": {
+        "age18": 120,
+        "age40": 180,
+        "age65": 290
+      },
+      "features": ["Cơ bản, giá rẻ", "Chi trả chuẩn VHIS"],
+      "limitations": ["Chi trả thấp", "Giới hạn bệnh viện tham gia"]
+    },
+    {
+      "id": "vhis_standard_02",
+      "name": "VHIS Standard Plus",
+      "type": "Standard",
+      "targetAudience": ["người mới mua lần đầu", "gia đình trẻ"],
+      "coverage": {
+        "hospitalization": "600 HKD/ngày",
+        "surgical": "50,000 HKD/năm",
+        "prePostHospital": "3 lần khám",
+        "prescribedMedication": true
+      },
+      "monthlyPremiumHKD": {
+        "age18": 160,
+        "age40": 220,
+        "age65": 350
+      },
+      "features": ["Phù hợp ngân sách", "Chi trả ổn định"],
+      "limitations": ["Không bao gồm phòng riêng"]
+    },
+    {
+      "id": "vhis_flexi_01",
+      "name": "VHIS Flexi Smart",
+      "type": "Flexi",
+      "targetAudience": ["gia đình", "cá nhân thu nhập trung bình"],
+      "coverage": {
+        "hospitalization": "1,000 HKD/ngày",
+        "surgical": "100,000 HKD/năm",
+        "prePostHospital": "4 lần khám",
+        "prescribedMedication": true
+      },
+      "monthlyPremiumHKD": {
+        "age18": 280,
+        "age40": 400,
+        "age65": 620
+      },
+      "features": ["Linh hoạt quyền lợi", "Hợp túi tiền"],
+      "limitations": ["Không có phòng VIP"]
+    },
+    {
+      "id": "vhis_flexi_02",
+      "name": "VHIS Flexi Max",
+      "type": "Flexi",
+      "targetAudience": ["trung niên", "có nhu cầu điều trị tốt hơn"],
+      "coverage": {
+        "hospitalization": "1,500 HKD/ngày",
+        "surgical": "200,000 HKD/năm",
+        "prePostHospital": "5 lần khám",
+        "prescribedMedication": true
+      },
+      "monthlyPremiumHKD": {
+        "age18": 350,
+        "age40": 500,
+        "age65": 780
+      },
+      "features": ["Bảo vệ toàn diện", "Thích hợp điều trị dài ngày"],
+      "limitations": ["Không chi trả điều trị ngoài nước"]
+    },
+    {
+      "id": "vhis_flexi_premium_01",
+      "name": "VHIS Premium Care",
+      "type": "Flexi Premium",
+      "targetAudience": ["khách VIP", "người có bệnh lý tiềm ẩn"],
+      "coverage": {
+        "hospitalization": "Toàn phần",
+        "surgical": "500,000 HKD/năm",
+        "prePostHospital": "Không giới hạn",
+        "prescribedMedication": true,
+        "privateRoom": true
+      },
+      "monthlyPremiumHKD": {
+        "age18": 600,
+        "age40": 880,
+        "age65": 1300
+      },
+      "features": ["Phòng riêng", "Chi trả toàn bộ viện phí"],
+      "limitations": ["Chi phí cao", "Khám sức khỏe bắt buộc"]
+    },
+    {
+      "id": "vhis_family_01",
+      "name": "VHIS Family Essential",
+      "type": "Flexi",
+      "targetAudience": ["gia đình có con nhỏ"],
+      "coverage": {
+        "hospitalization": "800 HKD/ngày",
+        "surgical": "120,000 HKD/năm",
+        "prePostHospital": "4 lần khám",
+        "prescribedMedication": true
+      },
+      "monthlyPremiumHKD": {
+        "age18": 260,
+        "age40": 360,
+        "age65": 600
+      },
+      "features": ["Tối ưu cho trẻ em", "Chi phí hợp lý"],
+      "limitations": ["Không có phòng riêng"]
+    },
+    {
+      "id": "vhis_elderly_01",
+      "name": "VHIS Senior Care",
+      "type": "Standard",
+      "targetAudience": ["người cao tuổi"],
+      "coverage": {
+        "hospitalization": "500 HKD/ngày",
+        "surgical": "40,000 HKD/năm",
+        "prePostHospital": "2 lần khám",
+        "prescribedMedication": false
+      },
+      "monthlyPremiumHKD": {
+        "age18": 150,
+        "age40": 210,
+        "age65": 370
+      },
+      "features": ["Phù hợp người già", "Thủ tục đơn giản"],
+      "limitations": ["Không chi trả thuốc kê đơn", "Giới hạn tuổi"]
+    },
+    {
+      "id": "vhis_child_01",
+      "name": "VHIS Kid Plus",
+      "type": "Flexi",
+      "targetAudience": ["trẻ em", "cha mẹ có con nhỏ"],
+      "coverage": {
+        "hospitalization": "1,200 HKD/ngày",
+        "surgical": "180,000 HKD/năm",
+        "prePostHospital": "5 lần khám",
+        "prescribedMedication": true
+      },
+      "monthlyPremiumHKD": {
+        "age18": 200,
+        "age40": 320,
+        "age65": 0
+      },
+      "features": ["Thiết kế riêng cho trẻ", "Chi trả thuốc và tiêm phòng"],
+      "limitations": ["Không áp dụng cho người lớn"]
+    },
+    {
+      "id": "vhis_maternity_01",
+      "name": "VHIS Maternity Care",
+      "type": "Flexi",
+      "targetAudience": ["phụ nữ mang thai", "cặp vợ chồng trẻ"],
+      "coverage": {
+        "hospitalization": "900 HKD/ngày",
+        "surgical": "150,000 HKD/năm",
+        "prePostHospital": "6 lần khám",
+        "prescribedMedication": true,
+        "maternitySupport": true
+      },
+      "monthlyPremiumHKD": {
+        "age18": 380,
+        "age40": 500,
+        "age65": 0
+      },
+      "features": ["Chi trả thai sản", "Hỗ trợ sinh mổ"],
+      "limitations": ["Chỉ dành cho nữ < 45 tuổi"]
+    },
+    {
+      "id": "vhis_global_01",
+      "name": "VHIS Global Health",
+      "type": "Flexi Premium",
+      "targetAudience": ["doanh nhân", "người hay đi nước ngoài"],
+      "coverage": {
+        "hospitalization": "Toàn cầu",
+        "surgical": "1,000,000 HKD/năm",
+        "prePostHospital": "Không giới hạn",
+        "prescribedMedication": true,
+        "privateRoom": true
+      },
+      "monthlyPremiumHKD": {
+        "age18": 900,
+        "age40": 1200,
+        "age65": 1700
+      },
+      "features": ["Bảo hiểm quốc tế", "Điều trị cao cấp toàn cầu"],
+      "limitations": ["Chi phí rất cao", "Yêu cầu kê khai sức khỏe kỹ"]
+    }
+  ]
+  
