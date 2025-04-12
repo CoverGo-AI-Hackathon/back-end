@@ -4,24 +4,23 @@ import chatService from 'service/chatService';
 import respondHelper from 'view/respond';
 
 export default {
-    getBotReply: async (req: Request, res: Response) => {
-        try {
-            const { message } = req.body;
-            const reply = await chatService.getBotReply(message);
-            res.json(respondHelper(200, { reply }));
-        } catch (err) {
-            console.error(err);
-            const errorMessage = err instanceof Error ? err.message : 'Internal server error';
-            res.status(500).send(respondHelper(500, errorMessage));
-        }
-    },
+    // getBotReply: async (req: Request, res: Response) => {
+    //     try {
+    //         const { message } = req.body;
+    //         const reply = await chatService.getBotReply(message);
+    //         res.json(respondHelper(200, { reply }));
+    //     } catch (err) {
+    //         console.error(err);
+    //         const errorMessage = err instanceof Error ? err.message : 'Internal server error';
+    //         res.status(500).send(respondHelper(500, errorMessage));
+    //     }
+    // },
     sendMessage: async (req: Request, res: Response) => {
         try {
-
             const { message } = req.body;
             // @ts-ignore
             const { email } = req.user
-            const reply = await chatService.sendUserMessage(message, email);
+            const reply = await chatService.handleUserMessage(message, email);
             res.json(respondHelper(200, { reply }));
         } catch (err) {
             console.error(err);

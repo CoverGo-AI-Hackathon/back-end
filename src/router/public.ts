@@ -3,7 +3,7 @@ import chatController from 'src/controller/chatController';
 
 const router: Router = express.Router();
 
-router.get('/plans', chatController.getBotReply)
+// router.get('/plans', chatController.)
 
 
 

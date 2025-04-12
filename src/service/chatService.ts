@@ -24,26 +24,12 @@ const structuredData = {
 
 export default {
 
-    sendUserMessage: async (message: string, email: string): Promise<string> => {
-
-        const reply = mockBotReply(message);
-
-        await ChatModel.create({ email, content: message });
-
-        return reply;
-    },
-
-    getRecentMessages: async (email: string, limit = 10) => {
-        return await ChatModel.find({ email })
-            .sort({ createdAt: -1 })
-            .limit(limit)
-            .select('content -_id')
-            .lean();
-    },
-
-    getBotReply: async (message: string): Promise<any> => {
+    handleUserMessage: async (message: string, email: string): Promise<any> => {
         try {
-            // Tạm structuredData mock – sau này có thể phân tích từ message
+            // 1. Lưu tin nhắn người dùng
+            await ChatModel.create({ email, content: message });
+
+            // 2. Phân tích structuredData (tạm mock)
             const structuredData = {
                 age: 40,
                 budget: '< 500 HKD/tháng',
@@ -51,6 +37,7 @@ export default {
                 needs: ['nhập viện', 'phẫu thuật']
             };
 
+            // 3. Chọn gói bảo hiểm phù hợp
             const matchedPlans = vhisPlans
                 .filter(plan => plan.targetAudience.some(a => a.includes('gia đình')))
                 .slice(0, 3)
@@ -65,13 +52,23 @@ export default {
                     coverage: p.coverage
                 }));
 
+            // 4. Trả lại kết quả
             return {
                 recommendedPlans: matchedPlans,
                 structuredData
             };
         } catch (err) {
             console.error(err);
-            throw new Error('Lỗi khi tạo phản hồi cho chatbot');
+            throw new Error('Lỗi khi xử lý tin nhắn và phản hồi bot');
         }
-    }
+    },
+
+    getRecentMessages: async (email: string, limit = 10) => {
+        return await ChatModel.find({ email })
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .select('content -_id')
+            .lean();
+    },
+
 };
