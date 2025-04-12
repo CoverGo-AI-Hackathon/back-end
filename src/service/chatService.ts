@@ -1,91 +1,133 @@
 // service/chatService.ts
 import ChatModel from 'model/chatModel';
-import axios from 'axios';
 import vhisPlans from 'data/insurance.json';
-import respondHelper from 'view/respond';
+import geminiService from './geminiService';
+import boxChatService from './boxChatService';
+import TagLog from 'model/tagLog';
+import { name } from 'ejs';
 
-
-const mockBotReply = (message: string): string => {
-    // Có thể dùng tạm rule hoặc template, hoặc đơn giản là:
-    return `Tôi đã ghi nhận câu hỏi: "${message}". Cảm ơn bạn!`;
+const buildConversationPrompt = (history: { content: string }[]): string => {
+    return history.map(h => `User: ${h.content}`).join('\n') + '\nAI:';
 };
-
-const getReasonFromTarget = (plan: any): string => {
-    const audience = plan.targetAudience.join(', ');
-    return `Phù hợp cho ${audience}`;
-};
-
-const structuredData = {
-    age: 40,
-    budget: "< 500 HKD/tháng",
-    concern: "gia đình có con nhỏ",
-    needs: ["nhập viện", "phẫu thuật"]
-};
-
-const generateFriendlyIntro = (): string => {
-    const intros = [
-        "Based on your needs, I’ve found some plans that might suit you!",
-        "Here are a few insurance options I think you'll find helpful 👇",
-        "Take a look at these recommended plans for you!",
-        "I’ve selected some plans that match your situation!",
-        "Hope these suggestions help you out! 😊"
-    ];
-    const index = Math.floor(Math.random() * intros.length);
-    return intros[index];
-};
-
-
-
-
 
 export default {
-
     handleUserMessage: async (message: string, email: string): Promise<any> => {
         try {
-            // 1. Lưu tin nhắn người dùng
             await ChatModel.create({ email, content: message });
 
-            // 2. Phân tích structuredData (tạm mock)
-            const structuredData = {
-                age: 40,
-                budget: '< 500 HKD/tháng',
-                concern: 'gia đình có con nhỏ',
-                needs: ['nhập viện', 'phẫu thuật']
-            };
+            const { tags, top } = await boxChatService.getTopInsuranceTags(message);
 
-            // 3. Chọn gói bảo hiểm phù hợp
-            const matchedPlans = vhisPlans
-                .filter(plan => plan.targetAudience.some(a => a.includes('gia đình')))
-                .slice(0, 3)
-                .map(p => ({
-                    id: p.id,
-                    name: p.name,
-                    type: p.type,
-                    targetAudience: p.targetAudience,
-                    monthlyPremiumHKD: p.monthlyPremiumHKD,
-                    features: p.features,
-                    limitations: p.limitations,
-                    coverage: p.coverage
-                }));
+            console.log("tagNames", tags);
 
-            // 4. Trả lại kết quả
+            const history = await ChatModel.find({ email })
+                .sort({ createdAt: -1 })
+                .limit(10)
+                .select('content -_id')
+                .lean();
+
+            const prompt = buildConversationPrompt(history);
+
+            let geminiReply: string;
+
+            try {
+                const reply = await geminiService.callGemini(prompt, tags);
+                geminiReply = typeof reply === 'string'
+                    ? reply
+                    : JSON.stringify(reply); // fallback nếu là object
+                const formattedReply = geminiReply.replace(/\n/g, '<br/>');
+                geminiReply = formattedReply;
+            } catch (err) {
+                console.error('Gemini failed:', err);
+                geminiReply = 'Sorry, I could not generate a reply at the moment.';
+            }
+
+            await ChatModel.create({ email, content: geminiReply });
+
+            const data = await boxChatService.getIdProduct(message)
+            let matchedPlans: any[] = [];
+
+            if (tags.length > 0) {
+                const crmTags = tags.map(tag => {
+                    const match = vhisPlans.find(p => p.name === tag);
+                    return match ? match.name : null;
+                }).filter(Boolean); // lọc ra các tag hợp l
+                
+                const exitsTagLog = await TagLog.findOne({ email })
+                
+                console.log("cmTags", crmTags);
+                if (!exitsTagLog) {
+                    const data:any[] = []
+                    crmTags.forEach((tag, index) => {
+                        data.push({ number: 1, tagName: tag })
+                    })
+                    await TagLog.create({
+                        email,
+                        tags: data,
+                        topTag: top?.['tag name'] // chọn cuối làm đại diện
+                    });
+                    matchedPlans = vhisPlans.filter(p => p.name === top?.['tag name']
+                    );
+                }else {
+                    let max = 0;
+                    let topTag = exitsTagLog.topTag;
+                                        // First, handle existing tags by incrementing their number
+                    crmTags.forEach(tag => {
+                        console.log("max", max);
+                        console.log("topTag", topTag);
+                        const existingTag = exitsTagLog.tags.find(t => t.tagName === tag);
+                        if (existingTag) {
+                            // Increment number for existing tag
+                            existingTag.number = existingTag.number?existingTag.number+1:1;
+                            if (existingTag.number > max) {
+                                max = existingTag.number;
+                                topTag = existingTag.tagName;
+                            }
+                            
+                        } else {
+                            // Add new tag with number 1
+                            exitsTagLog.tags.push({ number: 1, tagName: tag });
+                            if (!topTag) {
+                                topTag = tag;
+                            }
+                        }
+                        exitsTagLog.topTag = topTag;
+                    });
+                    
+                    // Update the top tag
+                    console.log("exitsTagLog", exitsTagLog);
+                    await exitsTagLog.save();
+                    matchedPlans = vhisPlans.filter(p => p.name === topTag
+                    );
+                }
+
+                
+
+                console.log("matchedPlans", matchedPlans);
+            }
+        
+
             return {
-                friendlyReply: generateFriendlyIntro(),
-                recommendedPlans: matchedPlans,
-                structuredData
-            };
-        } catch (err) {
-            console.error(err);
-            throw new Error('Lỗi khi xử lý tin nhắn và phản hồi bot');
-        }
-    },
+            botReply: geminiReply,
+            recommendedPlans: data,
+            matchedPlans: [{
+                name: matchedPlans[0]?.name,
+                type: matchedPlans[0]?.type,
+                targetAudience: matchedPlans[0]?.targetAudience,
+                features: matchedPlans[0]?.features,
+            }
+            ],
+        };
+    } catch(err) {
+        console.error(err);
+        throw new Error('Lỗi khi xử lý tin nhắn và phản hồi bot');
+    }
+},
 
-    getRecentMessages: async (email: string, limit = 10) => {
-        return await ChatModel.find({ email })
-            .sort({ createdAt: -1 })
-            .limit(limit)
-            .select('content -_id')
-            .lean();
-    },
-
+getRecentMessages: async (email: string, limit = 10) => {
+    return await ChatModel.find({ email })
+        .sort({ createdAt: 1 })
+        .limit(limit)
+        .select('content -_id')
+        .lean();
+}
 };
