@@ -1,6 +1,7 @@
 import { router as auth } from 'router/auth'
 import { router as api } from 'router/api'
 import { router as payment } from 'router/payment'
+import { router as publics } from 'router/public'
 
 export default [ 
     {
@@ -54,6 +55,30 @@ export default [
             "/api/info": {
                 "method": "GET",
                 "description": "lấy thông tin cơ bản"
+            }, 
+            "/api/chat": {
+                "method": "POST",
+                "description": "api gửi tin nhắn đến bot, yêu cầu token trong header",
+                "addition": {
+                    "require body": {
+                        "message": "string"
+                    }
+                }
+            }, 
+            "/api/recent": {
+                "method": "GET",
+                "description": "api lấy danh sách tin nhắn đã gửi, yêu cầu token trong header",
+            }
+        }
+    },
+    {
+        prefix: "/public",
+        router: publics, 
+        description: "endpoint dùng cho api công khai",
+        api: {
+            "/public/plans": {
+                "method": "GET",
+                "description": "api lấy danh sách các gói bảo hiểm"
             }
         }
     }

@@ -10,6 +10,7 @@
     "resolveJsonModule": true,
 
     "paths": {
+      "data/*": ["src/data/*"],
       "config/*": ["src/config/*"],
       "router/*": ["src/router/*"],
       "service/*": ["src/service/*"],
