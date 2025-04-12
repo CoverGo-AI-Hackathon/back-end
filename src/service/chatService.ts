@@ -22,6 +22,22 @@ const structuredData = {
     needs: ["nhập viện", "phẫu thuật"]
 };
 
+const generateFriendlyIntro = (): string => {
+    const intros = [
+        "Based on your needs, I’ve found some plans that might suit you!",
+        "Here are a few insurance options I think you'll find helpful 👇",
+        "Take a look at these recommended plans for you!",
+        "I’ve selected some plans that match your situation!",
+        "Hope these suggestions help you out! 😊"
+    ];
+    const index = Math.floor(Math.random() * intros.length);
+    return intros[index];
+};
+
+
+
+
+
 export default {
 
     handleUserMessage: async (message: string, email: string): Promise<any> => {
@@ -54,6 +70,7 @@ export default {
 
             // 4. Trả lại kết quả
             return {
+                friendlyReply: generateFriendlyIntro(),
                 recommendedPlans: matchedPlans,
                 structuredData
             };
