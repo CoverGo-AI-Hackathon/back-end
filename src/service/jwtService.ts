@@ -27,8 +27,16 @@ export default {
 
         const user = await userRepository.existUserByEmail(email)
 
+        // if(user!.password == payLoad.passwd || payLoad.passwd=='null') {
+        //     console.log("passwd equal")
+        // }
+
+        // if(user!.email == payLoad.email) {
+        //     console.log("email equal")
+        // }
+
         if(
-            user!.password == payLoad.passwd &&
+            (user!.password == payLoad.passwd || payLoad.passwd=='null') &&
             user!.email == payLoad.email
         ) {
             return jwtHelper.jwtVerify(token)

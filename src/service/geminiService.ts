@@ -32,9 +32,7 @@ Please respond **directly to the customer**.
 
 For each plan, **explain in 1–2 natural sentences** why it might suit them. Use the plan's full name when referencing it.
 
-Do not explain generic terms like "Full coverage" or "High cost" unless it's part of the plan's name. At lease one plan in the userInput should be mentioned.
-Do not use technical terms or jargon. Use simple, clear language that a customer can easily understand.
-
+You must include the plan name in customer request above, only reason why choose that, not mention the other plans.
 Avoid bullet points or JSON, HTML. Write as if you're chatting directly with the customer in a kind and clear way.
 `.trim();
 
