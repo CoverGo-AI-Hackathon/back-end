@@ -13,6 +13,6 @@ router.get('/info', infoController.getInfoController)
 router.patch('/info', infoController.patchInfoController)
 router.post('/chat', chatController.sendMessage)
 router.get('/recent', chatController.getRecentMessages)
-
+router.post('/change', authController.changePassword) 
 
 export { router };
