@@ -14,16 +14,19 @@ const buildConversationPrompt = (history: { content: string, isBot?: boolean }[]
 
 function sanitizeGeminiReply(raw: string): string {
     return raw
-        .replace(/\\n/g, ' ')          // dấu \n dạng chuỗi
-        .replace(/\n+/g, ' ')          // nhiều \n → một dòng
-        .replace(/\*\*/g, ' ')           // bỏ markdown bold
-        .replace(/\\"/g, '"')           // bỏ escape dấu "
-        .replace(/\\+"/g, '"')          // bỏ \ trước dấu "
-        .replace(/(^|[\s(])"([^"]+)"/g, '$1$2') // bỏ dấu " quanh từ đơn lẻ
-        .replace(/\\+/g, '')            // dư dấu \
-        .replace(/\s{2,}/g, ' ')        // xóa khoảng trắng dư
+        .replace(/\\n/g, ' ')               // chuỗi '\n' thành khoảng trắng
+        .replace(/\n+/g, ' ')               // xuống dòng thật → khoảng trắng
+        .replace(/\*\*(.*?)\*\*/g, '$1')    // bỏ **markdown bold**
+        .replace(/\*(.*?)\*/g, '$1')        // bỏ *nhấn mạnh đơn*
+        .replace(/\\"/g, '"')               // bỏ escape dấu "
+        .replace(/\\+"/g, '"')              // bỏ \ trước dấu "
+        .replace(/(^|[\s(])"([^"]+)"([\s.,;!?)]|$)/g, '$1$2$3') // bỏ " quanh từ/cụm
+        .replace(/\\+/g, '')                // bỏ dấu \
+        .replace(/•/g, '-')                 // dấu gạch đầu dòng đặc biệt
+        .replace(/\s{2,}/g, ' ')            // nhiều khoảng trắng → 1
         .trim();
 }
+
 
 
 export default {

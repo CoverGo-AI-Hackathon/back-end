@@ -5,13 +5,28 @@ import vhisPlans from 'data/insurance.json';
 dotenv.config();
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'your-key-here';
 
-const buildPrompt = (userInput: string, tags: string[]) => `
+function reducePlansForGemini(plans: typeof vhisPlans, limit = 10) {
+    return plans.slice(0, limit).map(p => ({
+        name: p.name,
+        type: p.type,
+        targetAudience: p.targetAudience,
+        features: p.features
+    }));
+}
+
+const buildPrompt = (userInput: string, tags: string[], plansPreview: any[]) => {
+    const planList = plansPreview.map((p, i) => `${i + 1}. ${p.name} (${p.type}) - ${p.features.join(', ')}`).join('\n');
+    return `
+    
 You are a helpful insurance advisor.
 
 The customer said: "${userInput}"
 
 A semantic model suggests these plans may fit the customer:
 ${tags.map((t, i) => `${i + 1}. ${t}`).join('\n')}
+
+Plan details:
+${planList}
 
 Please respond **directly to the customer**.
 
@@ -22,14 +37,18 @@ Do not explain generic terms like "Full coverage" or "High cost" unless it's par
 Avoid bullet points or JSON, HTML. Write as if you're chatting directly with the customer in a kind and clear way.
 `.trim();
 
+}
+
 
 
 
 export default {
     callGemini: async (userInput: string, tags: string[]): Promise<string> => {
-        const prompt = buildPrompt(userInput, tags);
+        const plansPreview = reducePlansForGemini(vhisPlans, 10);
+        const prompt = buildPrompt(userInput, tags, plansPreview);
 
         try {
+
             const response = await axios.post(
                 `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
                 {
