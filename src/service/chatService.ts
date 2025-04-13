@@ -141,11 +141,17 @@ export default {
 },
 
 getRecentMessages: async (email: string, limit = 10) => {
-    return await ChatModel.find({ email })
+    const messages = await ChatModel.find({ email })
         .sort({ createdAt: -1 })
         .limit(limit)
         .select('content -_id')
         .lean();
+
+    // Trả về các tin nhắn gần đây theo thứ tự từ mới nhất đến cũ nhất
+    return messages.reverse().map(msg => ({
+        content: msg.content,
+        isBot: msg.isBot
+    }));
 }
 };
 
