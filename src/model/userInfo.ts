@@ -17,7 +17,7 @@ export default mongoose.model('UserInfo', new mongoose.Schema(
             default: ""
         },
         dob: {
-            type: Date,
+            type: String,
             default: null
         },
         gender: {

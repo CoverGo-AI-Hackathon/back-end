@@ -4,9 +4,9 @@ import userService from 'service/userService';
 import redisService from 'service/redisService';
 import jwtHelper from 'src/helper/jwtHelper';
 import respond from 'view/respond';
-import user from 'model/user';
-import { message } from 'antd';
 import respondHelper from 'view/respond';
+import authService from 'service/authService';
+import hcmacHelper from 'src/helper/hcmacHelper';
 
 
 export default {
@@ -27,6 +27,21 @@ export default {
         res.redirect(`${process.env.FRONT_END_REDIRECT_URL}?access_token=${access_token}` || `https://example.com?access_token=${access_token}`)
     },
 
+    loginWithEmail: async (req:Request, res:Response) => {
+        let {email, password, fingerprint} = req.body
+
+        password = hcmacHelper.hash(password)
+
+        const verify:boolean = await authService.loginWithEmail(email, password)
+
+        if (verify) {
+            let {email, password, fingerprint} = req.body
+            res.send(respond(200, jwtHelper.jwtSign(email, fingerprint, password)))
+        } else {
+            res.status(401).json(respond(400, "fail to login"))
+        }
+    },
+
     logOutController: async (req: Request, res: Response) => {
         const authHeader = req.headers['authorization'];
         const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
@@ -38,27 +53,5 @@ export default {
         redisService.setItem(`BLACK_LIST_TOKEN:${payLoad.uuid}`, "check", ttl)
 
         res.json(respond(200, "Đăng xuất thành công"))
-    },
-    changePassword: async (req: Request, res: Response) => {
-        try {
-            // @ts-ignore
-            const { email } = req.user
-            const { password } = req.body
-            const data = userService.updatePassword(password, email)
-            if (!data) {
-                res.status(200).json({
-                    message: "change password success",
-                    refesherToken: data
-                })
-            }
-            res.status(422).json({
-                message: "error change password"
-            })
-        } catch (err) {
-            console.error(err);
-            const errorMessage = err instanceof Error ? err.message : 'Internal server error';
-            res.status(500).send(respondHelper(500, errorMessage));
-        }
     }
-
 }

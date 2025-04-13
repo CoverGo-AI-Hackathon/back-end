@@ -19,6 +19,13 @@ export default [
                 "addition": {
                     "note": "Hidden api do not call!"
                 }
+            },
+            "/auth/loginWithEmail": {
+                "method": "POST",
+                "description": "login với email và mật khẩu",
+                "addition": {
+                    "require body": "email and password"
+                }
             }
         }
     },
@@ -68,6 +75,13 @@ export default [
             "/api/recent": {
                 "method": "GET",
                 "description": "api lấy danh sách tin nhắn đã gửi, yêu cầu token trong header",
+            }, 
+            "/api/changePassword": {
+                "method": "PATCH",
+                "description": "api đổi mật khẩu",
+                addition: {
+                    "require body": "newPassword:string"
+                }
             }
         }
     },

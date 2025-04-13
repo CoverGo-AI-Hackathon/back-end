@@ -3,6 +3,7 @@ import CryptoJS from 'crypto-js';
 import zaloPayHelper from 'src/helper/zaloPayHelper';
 import respond from 'view/respond';
 import paymentService from 'service/paymentService';
+import emailHelper from 'src/helper/emailHelper';
 
 interface Result {
     return_code: number;
@@ -13,8 +14,6 @@ interface Result {
 export default{
     zaloPayCallBackHandler: (req: Request, res: Response) => {
       let result: Result = { return_code: 0, return_message: '' };
-
-      console.log("Im here")
 
       try {
         console.log(req.body)
@@ -48,7 +47,18 @@ export default{
           let embedDataEmail = JSON.parse(dataJson.embed_data).email;
           let amount = dataJson.amount
           paymentService.addMoneyToUser(embedDataEmail, amount)
-        }
+
+          const htmlContent = `
+              <html>
+                <body>
+                  <p>Giao dịch thanh toán ZaloPay của bạn đã thành công.</p>
+                  <p><strong>Số tiền thanh toán:</strong> ${amount} VND</p>
+                  <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!</p>
+                </body>
+              </html>
+            `;
+            emailHelper.sendMail(embedDataEmail, "Xác Nhận Thanh Toán Zalo Pay", htmlContent)
+          }
         } catch (ex: any) {
           console.log(ex.message)
 

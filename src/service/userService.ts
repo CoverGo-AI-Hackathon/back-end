@@ -1,6 +1,4 @@
-import { FastBackwardFilled } from '@ant-design/icons';
 import { HmacSHA256 } from 'crypto-js';
-import e from 'express';
 import userRepository from 'repository/userRepository';
 import jwtHelper from 'src/helper/jwtHelper';
 
