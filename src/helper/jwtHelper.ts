@@ -11,7 +11,7 @@ export default {
             email: email,
             fingerprint: fingerprint || 'null',
             passwd: passwd || 'null'
-        }, secret!, { expiresIn: '1h' });
+        }, secret!, { expiresIn: '7d' });
     },
 
     jwtVerify: (token: string) => {

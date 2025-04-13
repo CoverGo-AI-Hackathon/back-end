@@ -23,9 +23,10 @@ export default {
         let jwt = null
 
         try {
-            jwt = jwtHelper.jwtVerify(token)
+            jwt = await jwtService.verifyJWTForUser(token, fingerprint)
 
             const tokenCheck = await redisService.getItem(`BLACK_LIST_TOKEN:${jwt.uuid}`)
+            console.log(jwt.email, jwt.passwd)
 
             if (tokenCheck) {
                 res.status(401).json(respond(401, "Token Has Been Invalidated"))

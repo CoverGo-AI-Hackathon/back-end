@@ -18,5 +18,22 @@ export default {
         }
 
         throw Error("Cant Create New Token")
-    }
+    },
+
+    verifyJWTForUser: async (token:string, fingerprint:string) => {
+        const payLoad = jwtHelper.getPayloadFromToken(token)
+
+        const email = payLoad['email']
+
+        const user = await userRepository.existUserByEmail(email)
+
+        if(
+            user!.password == payLoad.passwd &&
+            user!.email == payLoad.email
+        ) {
+            return jwtHelper.jwtVerify(token)
+        }
+
+        throw Error("Can not verify token")
+    },
 }

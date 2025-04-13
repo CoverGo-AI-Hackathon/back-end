@@ -22,7 +22,7 @@ export default {
         const existUser = await User.findOne({
             email: email
         })
-            .select("email displayName role")
+            .select("email displayName role password")
 
         return existUser
     },
@@ -127,6 +127,7 @@ export default {
     verifyEmailAndPassword: async (email:string, password:string) => {
         const user = await User.findOne({ email })
 
-        return user?.password == password
+        console.log(password)
+        return user!['password'] == password
     }
 }

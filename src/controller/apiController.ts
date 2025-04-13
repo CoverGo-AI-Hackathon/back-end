@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import apiService from 'service/apiService';
 import respond from 'view/respond';
 import jwtHelper from 'src/helper/jwtHelper';
+import redisService from 'service/redisService';
 
 export default {
     changePasswordController: async (req: Request, res: Response) => {
@@ -43,5 +44,9 @@ export default {
         
         const data = await apiService.changeInfoService(email, displayName, aboutMe, phone, dob, gender)
         res.send(respond(200, {message: "success"}))
+    },
+
+    jwtCheck: async (req: Request, res: Response) => {
+        
     }
 }

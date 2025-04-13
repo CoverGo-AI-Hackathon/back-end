@@ -35,7 +35,6 @@ export default {
         const verify:boolean = await authService.loginWithEmail(email, password)
 
         if (verify) {
-            let {email, password, fingerprint} = req.body
             res.send(respond(200, jwtHelper.jwtSign(email, fingerprint, password)))
         } else {
             res.status(401).json(respond(400, "fail to login"))

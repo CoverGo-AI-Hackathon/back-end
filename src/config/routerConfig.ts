@@ -1,7 +1,6 @@
 import { router as auth } from 'router/auth'
 import { router as api } from 'router/api'
 import { router as payment } from 'router/payment'
-import { router as publics } from 'router/public'
 
 export default [ 
     {
@@ -82,17 +81,6 @@ export default [
                 addition: {
                     "require body": "newPassword:string"
                 }
-            }
-        }
-    },
-    {
-        prefix: "/public",
-        router: publics, 
-        description: "endpoint dùng cho api công khai",
-        api: {
-            "/public/plans": {
-                "method": "GET",
-                "description": "api lấy danh sách các gói bảo hiểm"
             }
         }
     }
