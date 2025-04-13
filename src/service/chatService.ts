@@ -6,14 +6,31 @@ import boxChatService from './boxChatService';
 import TagLog from 'model/tagLog';
 import { name } from 'ejs';
 
-const buildConversationPrompt = (history: { content: string }[]): string => {
-    return history.map(h => `User: ${h.content}`).join('\n') + '\nAI:';
+const buildConversationPrompt = (history: { content: string, isBot?: boolean }[]): string => {
+    const formatted = history.map(h => `${h.isBot ? 'AI' : 'User'}: ${h.content}`).join('\n');
+    const lastUserMessage = history.slice().find(h => !h.isBot)?.content || '';
+    return `${formatted}\n\n### User's latest message: "${lastUserMessage}"\nAI:`;
 };
+
+function sanitizeGeminiReply(raw: string): string {
+    return raw
+        .replace(/\\n/g, ' ')          // dấu \n dạng chuỗi
+        .replace(/\n+/g, ' ')          // nhiều \n → một dòng
+        .replace(/\*\*/g, ' ')           // bỏ markdown bold
+        .replace(/\\"/g, '"')           // bỏ escape dấu "
+        .replace(/\\+"/g, '"')          // bỏ \ trước dấu "
+        .replace(/(^|[\s(])"([^"]+)"/g, '$1$2') // bỏ dấu " quanh từ đơn lẻ
+        .replace(/\\+/g, '')            // dư dấu \
+        .replace(/\s{2,}/g, ' ')        // xóa khoảng trắng dư
+        .trim();
+}
+
 
 export default {
     handleUserMessage: async (message: string, email: string): Promise<any> => {
         try {
-            await ChatModel.create({ email, content: message });
+
+            await ChatModel.create({ email, content: message, isBot: false });
 
             const { tags, top } = await boxChatService.getTopInsuranceTags(message);
 
@@ -34,14 +51,14 @@ export default {
                 geminiReply = typeof reply === 'string'
                     ? reply
                     : JSON.stringify(reply); // fallback nếu là object
-                const formattedReply = geminiReply.replace(/\n/g, '<br/>');
+                const formattedReply = sanitizeGeminiReply(geminiReply);
                 geminiReply = formattedReply;
             } catch (err) {
                 console.error('Gemini failed:', err);
                 geminiReply = 'Sorry, I could not generate a reply at the moment.';
             }
 
-            await ChatModel.create({ email, content: geminiReply });
+            await ChatModel.create({ email, content: geminiReply, isBot: true });
 
             const data = await boxChatService.getIdProduct(message)
             let matchedPlans: any[] = [];
@@ -100,11 +117,8 @@ export default {
                     );
                 }
 
-                
-
                 console.log("matchedPlans", matchedPlans);
             }
-        
 
             return {
             botReply: geminiReply,
@@ -114,8 +128,8 @@ export default {
                 type: matchedPlans[0]?.type,
                 targetAudience: matchedPlans[0]?.targetAudience,
                 features: matchedPlans[0]?.features,
-            }
-            ],
+            }]
+            
         };
     } catch(err) {
         console.error(err);
@@ -125,9 +139,14 @@ export default {
 
 getRecentMessages: async (email: string, limit = 10) => {
     return await ChatModel.find({ email })
-        .sort({ createdAt: 1 })
+        .sort({ createdAt: -1 })
         .limit(limit)
         .select('content -_id')
         .lean();
 }
 };
+
+
+
+
+

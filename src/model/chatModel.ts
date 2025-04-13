@@ -1,16 +1,31 @@
-import mongoose from "mongoose";
+import mongoose, { Model } from 'mongoose';
 
 const chatSchema = new mongoose.Schema({
     email: {
         type: String,
-        required: true
+        required: true,
+        index: true
     },
     content: {
         type: String,
         required: true
+    },
+    isBot: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true
 });
 
-export default mongoose.model('Chat', chatSchema, 'chat');
+export interface IChat {
+    email: string;
+    content: string;
+    isBot?: boolean;
+}
+
+
+
+// ✅ Export with type
+const ChatModel = mongoose.model<IChat>('Chat', chatSchema, 'chat');
+export default ChatModel;

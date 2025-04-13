@@ -6,14 +6,22 @@ dotenv.config();
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'your-key-here';
 
 const buildPrompt = (userInput: string, tags: string[]) => `
-User input: "${userInput}"
+You are a helpful insurance advisor.
 
-The following insurance plans were recommended by a similarity model:
+The customer said: "${userInput}"
+
+A semantic model suggests these plans may fit the customer:
 ${tags.map((t, i) => `${i + 1}. ${t}`).join('\n')}
 
-Please explain briefly (1–2 sentences each) why each plan may suit the user.
-Avoid markdown, no JSON, just helpful, human-friendly explanation.
+Please respond **directly to the customer**.
+
+For each plan, **explain in 1–2 natural sentences** why it might suit them. Use the plan's full name when referencing it.
+
+Do not explain generic terms like "Full coverage" or "High cost" unless it's part of the plan's name.
+
+Avoid bullet points or JSON, HTML. Write as if you're chatting directly with the customer in a kind and clear way.
 `.trim();
+
 
 
 
