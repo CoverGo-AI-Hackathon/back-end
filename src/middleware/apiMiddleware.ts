@@ -51,6 +51,7 @@ export default {
 
             return
         }
+
         
         // @ts-ignore
         req.user = jwt

@@ -43,6 +43,8 @@ export default {
 
         
         const data = await apiService.changeInfoService(email, displayName, aboutMe, phone, dob, gender)
+
+        redisService.deleteItem(`${email}_INFO`)
         res.send(respond(200, {message: "success"}))
     },
 
